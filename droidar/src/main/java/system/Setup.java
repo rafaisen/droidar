@@ -188,7 +188,8 @@ public abstract class Setup {
         debugLogDoSetupStep(STEP0);
         initAllSingletons();
 
-        initializeErrorHandler();
+        // Uncomment to activate error handler
+        //initializeErrorHandler();
 
         /*
          * TODO move this to the end of the initialization method and use
