@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.webkit.CookieSyncManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -23,10 +25,16 @@ public abstract class M_WebView implements ModifierInterface {
 	@Override
 	public View getView(final Context context) {
 		WebView w = new WebView(context);
-		w.getSettings().setBuiltInZoomControls(useDefaultZoomControls);
+		WebSettings settings = w.getSettings();
+		settings.setBuiltInZoomControls(useDefaultZoomControls);
 		if (useTransparentBackground)
 			w.setBackgroundColor(0x00000000);
-		w.getSettings().setJavaScriptEnabled(true);
+		settings.setJavaScriptEnabled(true);
+		// Security: Disable file access
+		settings.setAllowFileAccess(false);
+		settings.setAllowContentAccess(false);
+		settings.setAllowFileAccessFromFileURLs(false);
+		settings.setAllowUniversalAccessFromFileURLs(false);
 
 		w.setWebChromeClient(new WebChromeClient() {
 			public void onProgressChanged(WebView view, int progress) {
@@ -62,6 +70,7 @@ public abstract class M_WebView implements ModifierInterface {
 		});
 
 		w.addJavascriptInterface(new Object() {
+			@JavascriptInterface
 			@SuppressWarnings("unused")
 			public void processHTML(String html) {
 				onPageLoaded(html);
