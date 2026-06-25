@@ -45,9 +45,7 @@ public class EfficientListQualified<T> extends EfficientList<T> {
 		if (quali != null) {
 			float[] x = new float[oldSize * 2];
 			// copy old values:
-			for (int i = 0; i < oldSize; i++) {
-				x[i] = quali[i];
-			}
+			System.arraycopy(quali, 0, x, 0, oldSize);
 			quali = x;
 		}
 		return super.resizeArray(oldSize, a);
@@ -57,11 +55,10 @@ public class EfficientListQualified<T> extends EfficientList<T> {
 	public boolean insert(int pos, T item) {
 		boolean insterOk = super.insert(pos, item);
 		if (insterOk && quali != null) {
-			int i;
-			for (i = quali.length - 1; i > pos; i--) {
-				quali[i] = quali[i - 1];
-			}
-			quali[i] = INIT_VALUE;
+			// super.insert already incremented myLength, so the new quality
+			// array length is myLength
+			System.arraycopy(quali, pos, quali, pos + 1, myLength - 1 - pos);
+			quali[pos] = INIT_VALUE;
 			return insterOk;
 		}
 		return insterOk;
@@ -70,11 +67,10 @@ public class EfficientListQualified<T> extends EfficientList<T> {
 	@Override
 	protected void removeItemFromArray(Object[] a, int pos) {
 		if (quali != null) {
-			int i;
-			for (i = pos; i < quali.length - 1; i++) {
-				quali[i] = quali[i + 1];
-			}
-			quali[i] = 0;
+			int numMoved = myLength - pos;
+			if (numMoved > 0)
+				System.arraycopy(quali, pos + 1, quali, pos, numMoved);
+			quali[myLength] = 0;
 		}
 		super.removeItemFromArray(a, pos);
 	}
