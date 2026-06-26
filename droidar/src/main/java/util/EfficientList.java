@@ -3,15 +3,15 @@ package util;
 /**
  * collections are realy expensive so dont use them if performance is important!
  * use this class instead.
- * 
+ *
  * the biggest problem is that every time you work with data of a a collection,
  * an interator object will be created wich is realy expensive and will cause
  * the gc to collect those iterators very often
- * 
+ *
  * TODO write testcases to be shure everything works here!
- * 
+ *
  * @author Spobo
- * 
+ *
  * @param <T>
  */
 public class EfficientList<T> {
@@ -75,16 +75,14 @@ public class EfficientList<T> {
 	protected Object[] resizeArray(int oldSize, Object[] a) {
 		Object[] x = new Object[oldSize * 2];
 		// copy old values:
-		for (int i = 0; i < oldSize; i++) {
-			x[i] = a[i];
-		}
+		System.arraycopy(a, 0, x, 0, oldSize);
 		return x;
 	}
 
 	/**
 	 * removes the first appearance of x from the list. (x is handled as an
 	 * object to improve performance)
-	 * 
+	 *
 	 * @param x
 	 * @return
 	 */
@@ -92,7 +90,7 @@ public class EfficientList<T> {
 		if (x == null)
 			return true;
 
-		for (int i = 0; i < myArray.length; i++) {
+		for (int i = 0; i < myLength; i++) {
 			if (myArray[i] == x) {
 				myLength--;
 				removeItemFromArray(myArray, i);
@@ -103,11 +101,10 @@ public class EfficientList<T> {
 	}
 
 	protected void removeItemFromArray(Object[] a, int pos) {
-		int i;
-		for (i = pos; i < a.length - 1; i++) {
-			a[i] = a[i + 1];
-		}
-		a[i] = null;
+		int numMoved = myLength - pos;
+		if (numMoved > 0)
+			System.arraycopy(a, pos + 1, a, pos, numMoved);
+		a[myLength] = null;
 	}
 
 	/**
@@ -120,11 +117,8 @@ public class EfficientList<T> {
 		if (pos > myLength)
 			return false;
 		resizeArrayIfNessecary();
-		int i;
-		for (i = myArray.length - 1; i > pos; i--) {
-			myArray[i] = myArray[i - 1];
-		}
-		myArray[i] = item;
+		System.arraycopy(myArray, pos, myArray, pos + 1, myLength - pos);
+		myArray[pos] = item;
 		myLength++;
 		return true;
 	}
@@ -141,7 +135,7 @@ public class EfficientList<T> {
 		if (myArray == null) {
 			return -1;
 		}
-		for (int i = 0; i < myArray.length; i++) {
+		for (int i = 0; i < myLength; i++) {
 			if (myArray[i] == x) {
 				return i;
 			}
@@ -211,7 +205,7 @@ public class EfficientList<T> {
 	/**
 	 * this method should only be used for testing and will be removed so never
 	 * use it
-	 * 
+	 *
 	 * @return
 	 */
 	@Deprecated
