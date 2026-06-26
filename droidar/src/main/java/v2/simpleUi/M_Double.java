@@ -59,7 +59,8 @@ public abstract class M_Double implements ModifierInterface, UiDecoratable {
 		e = new EditText(context);
 		e.setLayoutParams(p2);
 		e.setInputType(InputType.TYPE_CLASS_NUMBER
-				| InputType.TYPE_NUMBER_FLAG_DECIMAL);
+				| InputType.TYPE_NUMBER_FLAG_DECIMAL
+				| InputType.TYPE_NUMBER_FLAG_SIGNED);
 		e.setText("" + load());
 		e.setEnabled(editable);
 		e.setFocusable(editable);

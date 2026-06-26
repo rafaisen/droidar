@@ -50,6 +50,7 @@ public abstract class M_PlusMinus implements ModifierInterface, UiDecoratable {
 		final ImageButton minusBtn = new ImageButton(context);
 		if (myMinusImageId != -1) {
 			minusBtn.setImageResource(myMinusImageId);
+			minusBtn.setContentDescription("Decrease " + getVarName());
 			minusBtn.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -76,6 +77,7 @@ public abstract class M_PlusMinus implements ModifierInterface, UiDecoratable {
 		final ImageButton plusBtn = new ImageButton(context);
 		if (myPlusImageId != -1) {
 			plusBtn.setImageResource(myPlusImageId);
+			plusBtn.setContentDescription("Increase " + getVarName());
 			plusBtn.setOnClickListener(new OnClickListener() {
 
 				@Override

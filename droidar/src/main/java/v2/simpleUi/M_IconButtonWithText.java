@@ -55,6 +55,9 @@ public abstract class M_IconButtonWithText implements ModifierInterface,
 			}
 		});
 		imageButton.setImageResource(myIconId);
+		if (myText != null) {
+			imageButton.setContentDescription(myText);
+		}
 		l.addView(imageButton);
 
 		TextView t = null;
