@@ -2,6 +2,8 @@ package util;
 
 import android.content.Context;
 import android.opengl.Matrix;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 public class Calculus {
@@ -29,7 +31,7 @@ public class Calculus {
 	/**
 	 * Copied from {@link Matrix#invertM(float[], int, float[], int)} for better
 	 * performance
-	 * 
+	 *
 	 * @param mInv
 	 * @param mInvOffset
 	 * @param m
@@ -120,12 +122,13 @@ public class Calculus {
 	}
 
 	public interface TermResultListener {
+		@JavascriptInterface
 		public void returnResult(String result);
 	}
 
 	/**
 	 * TODO doesn't work
-	 * 
+	 *
 	 * @param context
 	 * @param inputTerm
 	 *            e.g. "(1+3)/4 * 2 - 7"
@@ -135,7 +138,14 @@ public class Calculus {
 	public static void calculateTermResult(Context context, String inputTerm,
 			TermResultListener resultListener) {
 		WebView webView = new WebView(context);
-		webView.getSettings().setJavaScriptEnabled(true);
+		WebSettings settings = webView.getSettings();
+		settings.setJavaScriptEnabled(true);
+		// Security: Disable file access
+		settings.setAllowFileAccess(false);
+		settings.setAllowContentAccess(false);
+		settings.setAllowFileAccessFromFileURLs(false);
+		settings.setAllowUniversalAccessFromFileURLs(false);
+
 		webView.addJavascriptInterface(resultListener, "JavaCallback");
 		webView.loadUrl("javascript:window.JavaCallback" + ".returnResult("
 				+ inputTerm + ")");
